@@ -134,6 +134,7 @@ bool isCardValid(String cardRFID) {
       lcd.clear();
       lcd.setCursor(0, 0);
       lcd.print("Acesso Permitido");
+      repetirSom(buzzerPin, 1000, 200, 3);
       delay(2000);
       lcd.clear();
       lcd.setCursor(0, 0);
@@ -148,6 +149,7 @@ bool isCardValid(String cardRFID) {
   lcd.clear();
   lcd.setCursor(0, 0);
   lcd.print("Acesso Negado");
+  repetirSom(buzzerPin, 1500, 200, 1);
   delay(2000);
   lcd.clear();
   lcd.setCursor(0, 0);
@@ -354,23 +356,12 @@ void loop() {
 
     if (mfrc522.PICC_IsNewCardPresent() && mfrc522.PICC_ReadCardSerial()) {
       String cardID = getCardID(mfrc522);  // Obtém o ID do cartão RFID
+      Serial.println("Novo cartão lido: " + cardID);
       mfrc522.PICC_HaltA();
-      tone(buzzerPin, 1500, 200);  // Frequência: 1500 Hz, Duração: 200 ms 
+      tone(buzzerPin, 1500, 200);
+      delay(2000);
       if (isCardValid(cardID)) {
         espSerial.println("CARD_RFID:" + cardID);
-        repetirSom(buzzerPin, 1000, 200, 3);
-        lcd.clear();
-        lcd.setCursor(0, 0);
-        lcd.print("Digite a senha:");
-      } else {
-        repetirSom(buzzerPin, 1500, 200, 1);
-        lcd.clear();
-        lcd.setCursor(0, 0);
-        lcd.print("Acesso negado!");
-        delay(3000);
-        lcd.clear();
-        lcd.setCursor(0, 0);
-        lcd.print("Digite a senha:");
       }
     }
   }
